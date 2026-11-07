@@ -9,3 +9,9 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+#Documents
+resume.docx
+resume.pdf
+
+uv.lock
