@@ -13,7 +13,7 @@ This project creates a website-like chat experience where visitors can ask about
 
 The app is built around a single Gradio chat interface and an OpenAI-compatible model (configured via OpenRouter). The system prompt is populated from a PDF resume stored in a private GitHub repository, so the model answers in-character as the represented person rather than as a generic assistant.
 
-LIVE APP Link: https://agentic-professional-twin.onrender.com/
+## LIVE APP Link: https://agentic-professional-twin.onrender.com/
 
 ## Stack
 
