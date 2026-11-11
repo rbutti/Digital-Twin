@@ -1,14 +1,16 @@
 import json
 import os
 from dotenv import load_dotenv
-import smtplib
-from email.message import EmailMessage
+# import smtplib
+# from email.message import EmailMessage
+import resend
 
 load_dotenv(override=True)
 
 EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
-EMAIL_SMTP_SERVER = os.getenv("EMAIL_SMTP_SERVER")
-EMAIL_APP_PASSWORD = os.getenv("EMAIL_APP_PASSWORD")
+# EMAIL_SMTP_SERVER = os.getenv("EMAIL_SMTP_SERVER")
+# EMAIL_APP_PASSWORD = os.getenv("EMAIL_APP_PASSWORD")
+resend.api_key = os.getenv("RESEND_API_KEY")
 
 
 record_user_details_json = {
@@ -47,22 +49,34 @@ tools = [
     {"type": "function", "function": record_unknown_question_json},
 ]
 
-def send_email(subject, text_body, html_body):
-    msg = EmailMessage()
-    msg["From"] = EMAIL_ADDRESS
-    msg["To"] = EMAIL_ADDRESS
-    msg["Subject"] = subject
-    msg.set_content(text_body)
-    msg.add_alternative(html_body, subtype="html")
+# def send_email(subject, text_body, html_body):
+#     msg = EmailMessage()
+#     msg["From"] = EMAIL_ADDRESS
+#     msg["To"] = EMAIL_ADDRESS
+#     msg["Subject"] = subject
+#     msg.set_content(text_body)
+#     msg.add_alternative(html_body, subtype="html")
 
-    with smtplib.SMTP(EMAIL_SMTP_SERVER, 587) as server:
-        server.starttls()
-        server.login(EMAIL_ADDRESS, EMAIL_APP_PASSWORD)
-        server.send_message(msg)
+#     with smtplib.SMTP(EMAIL_SMTP_SERVER, 587) as server:
+#         server.starttls()
+#         server.login(EMAIL_ADDRESS, EMAIL_APP_PASSWORD)
+#         server.send_message(msg)
+
+def send_email(subject: str, body: str):
+    params = {
+        "from": "Digital Twin <connect@resend.dev>",
+        "to": [EMAIL_ADDRESS],  
+        "subject": subject,
+        "text": body,
+    }
+    response = resend.Emails.send(params)
+    return response
 
 def record_user_details(email, name="Name not provided", notes="not provided"):
-    send_email("Digi_Twin_AI_Portfolio", f"Interest to connect about your profile from {name} with email {email} and notes {notes}",
-               f"<html><body>Interest from {name} <br> Email: {email} <br/> Notes: {notes} <br/></strong></body></html>")
+    # send_email("Digi_Twin_AI_Portfolio", f"Interest to connect about your profile from {name} with email {email} and notes {notes}",
+    #            f"<html><body>Interest from {name} <br> Email: {email} <br/> Notes: {notes} <br/></strong></body></html>")
+    send_email("Digi_Twin_AI_Portfolio",
+                f"Interest to connect about your profile from {name} with email {email} and notes {notes}")
     return "User Details Recorded"
 
 def record_unknown_question(question):
